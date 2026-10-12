@@ -29,6 +29,10 @@ import 'features/mechanic_jobs/data/datasources/mechanic_job_remote_data_source.
 import 'features/mechanic_jobs/data/repositories/mechanic_job_repository_impl.dart';
 import 'features/mechanic_jobs/domain/repositories/mechanic_job_repository.dart';
 import 'features/mechanic_jobs/presentation/bloc/mechanic_job_bloc.dart';
+import 'features/garage/data/datasources/garage_remote_data_source.dart';
+import 'features/garage/data/repositories/garage_repository_impl.dart';
+import 'features/garage/domain/repositories/garage_repository.dart';
+import 'features/garage/presentation/bloc/garage_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -59,6 +63,9 @@ Future<void> init() async {
   sl.registerLazySingleton<MechanicJobRemoteDataSource>(
     () => MechanicJobRemoteDataSource(sl<DioClient>().dio),
   );
+  sl.registerLazySingleton<GarageRemoteDataSource>(
+    () => GarageRemoteDataSource(sl<DioClient>().dio),
+  );
 
   // Repositories
   sl.registerLazySingleton<AuthRepository>(
@@ -82,6 +89,9 @@ Future<void> init() async {
   sl.registerLazySingleton<MechanicJobRepository>(
     () => MechanicJobRepositoryImpl(remoteDataSource: sl()),
   );
+  sl.registerLazySingleton<GarageRepository>(
+    () => GarageRepositoryImpl(remoteDataSource: sl()),
+  );
 
   // Blocs
   sl.registerFactory<AuthBloc>(
@@ -104,5 +114,8 @@ Future<void> init() async {
   );
   sl.registerFactory<MechanicJobBloc>(
     () => MechanicJobBloc(repository: sl()),
+  );
+  sl.registerFactory<GarageBloc>(
+    () => GarageBloc(repository: sl()),
   );
 }

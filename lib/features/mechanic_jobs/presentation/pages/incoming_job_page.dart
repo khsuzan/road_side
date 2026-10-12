@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../dashboard/presentation/pages/dashboard_page.dart'; // Import MapPainter
+import '../../../../core/widgets/map_painter.dart';
 import '../bloc/mechanic_job_bloc.dart';
 import '../bloc/mechanic_job_event.dart';
 import '../bloc/mechanic_job_state.dart';
-import 'job_detail_page.dart';
+import 'package:go_router/go_router.dart';
 
 class IncomingJobPage extends StatefulWidget {
   final String jobId;
@@ -114,7 +114,12 @@ class _IncomingJobPageState extends State<IncomingJobPage> {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+                    margin: EdgeInsets.only(
+                      left: 24,
+                      right: 24,
+                      top: 24,
+                      bottom: MediaQuery.of(context).padding.bottom + 24,
+                    ),
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
                       color: AppColors.surfaceContainerLowest,
@@ -333,14 +338,7 @@ class _IncomingJobPageState extends State<IncomingJobPage> {
 
                         // Action accept button
                         GestureDetector(
-                          onTap: () {
-                            Navigator.pushReplacement(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => JobDetailPage(jobId: job.id),
-                              ),
-                            );
-                          },
+                          onTap: () => context.go('/mechanic/job-detail/${job.id}'),
                           child: Container(
                             height: 60,
                             decoration: BoxDecoration(

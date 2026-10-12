@@ -5,6 +5,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../bloc/mechanic_job_bloc.dart';
 import '../bloc/mechanic_job_event.dart';
 import '../bloc/mechanic_job_state.dart';
+import '../../../../core/utils/toast_utils.dart';
 
 class JobDetailPage extends StatefulWidget {
   final String jobId;
@@ -98,14 +99,10 @@ class _JobDetailPageState extends State<JobDetailPage> {
       body: BlocConsumer<MechanicJobBloc, MechanicJobState>(
         listener: (context, state) {
           if (state is MechanicJobCompleteSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Job Completed Successfully!')),
-            );
+            AppToast.showSuccess(context, 'Job Completed Successfully!');
             Navigator.pop(context);
           } else if (state is MechanicJobFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            AppToast.showError(context, state.message);
           }
         },
         builder: (context, state) {
@@ -117,7 +114,12 @@ class _JobDetailPageState extends State<JobDetailPage> {
             final job = state.job;
 
             return SingleChildScrollView(
-              padding: const EdgeInsets.all(24),
+              padding: EdgeInsets.only(
+                left: 24,
+                right: 24,
+                top: 24,
+                bottom: MediaQuery.of(context).padding.bottom + 24,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [

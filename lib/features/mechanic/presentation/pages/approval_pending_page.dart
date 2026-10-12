@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
-
+import 'package:go_router/go_router.dart';
 class ApprovalPendingPage extends StatefulWidget {
   const ApprovalPendingPage({super.key});
 
@@ -136,7 +136,7 @@ class _ApprovalPendingPageState extends State<ApprovalPendingPage>
 
               // Actions
               GestureDetector(
-                onTap: () => Navigator.pop(context),
+                onTap: () => context.go('/'),
                 child: Container(
                   height: 56,
                   decoration: BoxDecoration(

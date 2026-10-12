@@ -5,6 +5,7 @@ import '../../../../core/theme/app_typography.dart';
 import '../bloc/mechanic_dashboard_bloc.dart';
 import '../bloc/mechanic_dashboard_event.dart';
 import '../bloc/mechanic_dashboard_state.dart';
+import 'package:go_router/go_router.dart';
 
 class MechanicDashboardPage extends StatefulWidget {
   const MechanicDashboardPage({super.key});
@@ -52,7 +53,12 @@ class _MechanicDashboardPageState extends State<MechanicDashboardPage> {
             final jobs = state.jobs;
 
             return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+              padding: EdgeInsets.only(
+                left: 24,
+                right: 24,
+                top: 16,
+                bottom: MediaQuery.of(context).padding.bottom + 16,
+              ),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
@@ -194,73 +200,76 @@ class _MechanicDashboardPageState extends State<MechanicDashboardPage> {
       return Icons.search;
     }
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      decoration: BoxDecoration(
-        color: AppColors.surfaceContainerLowest,
-        borderRadius: BorderRadius.circular(24),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
-            blurRadius: 20,
-            offset: const Offset(0, 5),
-          )
-        ],
-      ),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(24),
-        child: Column(
-          children: [
-            Container(
-              height: 140,
-              width: double.infinity,
-              color: AppColors.surfaceContainerLow,
-              child: Image.asset(
-                'assets/images/car.png',
-                fit: BoxFit.cover,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Text(
-                    '${job.title} (${job.vehicleModel})',
-                    style: AppTypography.headlineMd.copyWith(
-                      fontSize: 18,
-                      color: AppColors.onSurface,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    job.description,
-                    style: AppTypography.bodyMd.copyWith(
-                      color: AppColors.secondary,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  Row(
-                    children: [
-                      Icon(
-                        getStatusIcon(job.status),
-                        color: AppColors.primary,
-                        size: 16,
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        '${job.status} • ${job.timestamp}',
-                        style: AppTypography.labelBold.copyWith(
-                          color: AppColors.primary,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
+    return GestureDetector(
+      onTap: () => context.push('/mechanic/incoming/${job.id}'),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+          color: AppColors.surfaceContainerLowest,
+          borderRadius: BorderRadius.circular(24),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.04),
+              blurRadius: 20,
+              offset: const Offset(0, 5),
+            )
           ],
+        ),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(24),
+          child: Column(
+            children: [
+              Container(
+                height: 140,
+                width: double.infinity,
+                color: AppColors.surfaceContainerLow,
+                child: Image.asset(
+                  'assets/images/car.png',
+                  fit: BoxFit.cover,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Text(
+                      '${job.title} (${job.vehicleModel})',
+                      style: AppTypography.headlineMd.copyWith(
+                        fontSize: 18,
+                        color: AppColors.onSurface,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      job.description,
+                      style: AppTypography.bodyMd.copyWith(
+                        color: AppColors.secondary,
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    Row(
+                      children: [
+                        Icon(
+                          getStatusIcon(job.status),
+                          color: AppColors.primary,
+                          size: 16,
+                        ),
+                        const SizedBox(width: 8),
+                        Text(
+                          '${job.status} • ${job.timestamp}',
+                          style: AppTypography.labelBold.copyWith(
+                            color: AppColors.primary,
+                            fontSize: 12,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

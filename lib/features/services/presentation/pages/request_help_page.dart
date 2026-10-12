@@ -3,7 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../dashboard/presentation/pages/dashboard_page.dart'; // Import MapPainter
+import '../../../../core/widgets/map_painter.dart';
 
 class RequestHelpPage extends StatefulWidget {
   const RequestHelpPage({super.key});
@@ -455,7 +455,7 @@ class _RequestHelpPageState extends State<RequestHelpPage>
 
             // Bottom Floating Card
             Positioned(
-              bottom: 40,
+              bottom: MediaQuery.of(context).padding.bottom + 24,
               left: 24,
               right: 24,
               child: Container(
@@ -674,7 +674,7 @@ class _RequestHelpPageState extends State<RequestHelpPage>
 
             // Bottom Alert Sheet card
             Positioned(
-              bottom: 40,
+              bottom: MediaQuery.of(context).padding.bottom + 24,
               left: 24,
               right: 24,
               child: Container(

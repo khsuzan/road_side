@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
-import '../../../dashboard/presentation/pages/dashboard_page.dart'; // Import MapPainter
+import '../../../../core/widgets/map_painter.dart';
 import '../../domain/entities/mechanic_application_entity.dart';
 import '../bloc/mechanic_bloc.dart';
 import '../bloc/mechanic_event.dart';
 import '../bloc/mechanic_state.dart';
-import 'approval_pending_page.dart';
+import 'package:go_router/go_router.dart';
+import '../../../../core/utils/toast_utils.dart';
 
 class MechanicApplicationPage extends StatefulWidget {
   const MechanicApplicationPage({super.key});
@@ -80,23 +81,21 @@ class _MechanicApplicationPageState extends State<MechanicApplicationPage> {
       body: BlocConsumer<MechanicBloc, MechanicState>(
         listener: (context, state) {
           if (state is MechanicSubmitSuccess) {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (_) => const ApprovalPendingPage(),
-              ),
-            );
+            context.go('/mechanic/pending');
           } else if (state is MechanicFailure) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(state.message)),
-            );
+            AppToast.showError(context, state.message);
           }
         },
         builder: (context, state) {
           final isLoading = state is MechanicLoading;
 
           return SingleChildScrollView(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.only(
+              left: 24,
+              right: 24,
+              top: 24,
+              bottom: MediaQuery.of(context).padding.bottom + 24,
+            ),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

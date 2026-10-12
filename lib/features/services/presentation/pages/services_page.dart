@@ -79,7 +79,12 @@ class _ServicesPageState extends State<ServicesPage> {
                   final services = state.services;
 
                   return ListView(
-                    padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+                    padding: EdgeInsets.only(
+                      left: 24,
+                      right: 24,
+                      top: 8,
+                      bottom: MediaQuery.of(context).padding.bottom + 16,
+                    ),
                     children: [
                       // Featured block (only visible in 'All' or 'Diagnostics')
                       if (_selectedCategory == 'All' ||

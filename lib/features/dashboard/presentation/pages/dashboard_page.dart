@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/app_typography.dart';
+import '../../../../core/utils/toast_utils.dart';
+
 import '../../domain/entities/vehicle_entity.dart';
 import '../bloc/dashboard_bloc.dart';
 import '../bloc/dashboard_event.dart';
 import '../bloc/dashboard_state.dart';
+import 'package:go_router/go_router.dart';
 
 class DashboardPage extends StatefulWidget {
-  final bool isGuest;
-  const DashboardPage({super.key, this.isGuest = false});
+  const DashboardPage({super.key});
 
   @override
   State<DashboardPage> createState() => _DashboardPageState();
@@ -60,8 +62,10 @@ class _DashboardPageState extends State<DashboardPage>
     return Scaffold(
       backgroundColor: AppColors.background,
       appBar: PreferredSize(
-        preferredSize: const Size.fromHeight(80),
+        preferredSize: Size.fromHeight(64 + MediaQuery.of(context).padding.top),
         child: Container(
+          height: 64 + MediaQuery.of(context).padding.top,
+          padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
           decoration: BoxDecoration(
             color: AppColors.surfaceContainerLowest.withValues(alpha: 0.8),
             boxShadow: [
@@ -72,69 +76,119 @@ class _DashboardPageState extends State<DashboardPage>
               ),
             ],
           ),
-          child: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        height: 32,
-                        width: 32,
-                        decoration: const BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: AppColors.primary,
-                        ),
-                        alignment: Alignment.center,
-                        child: const Icon(
-                          Icons.flash_on,
-                          color: Colors.white,
-                          size: 16,
-                        ),
-                      ),
-                      const SizedBox(width: 8),
-                      Text(
-                        widget.isGuest ? 'Super Car Repair' : 'Dashboard',
-                        style: AppTypography.headlineMd.copyWith(
-                          fontSize: 20,
-                          color: AppColors.onSurface,
-                        ),
-                      ),
-                    ],
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      // Profile settings
-                    },
-                    child: Container(
-                      width: 40,
-                      height: 40,
-                      decoration: BoxDecoration(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      height: 32,
+                      width: 32,
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
-                        color: AppColors.surface,
-                        border: Border.all(
-                          color: AppColors.surfaceContainer,
-                          width: 1,
-                        ),
-                        image: widget.isGuest
-                            ? null
-                            : const DecorationImage(
-                                image: AssetImage('assets/images/person.png'),
-                                fit: BoxFit.cover,
-                              ),
+                        color: AppColors.primary,
                       ),
-                      child: widget.isGuest
-                          ? const Icon(
-                              Icons.person_outline,
-                              color: AppColors.secondary,
-                            )
-                          : null,
+                      alignment: Alignment.center,
+                      child: const Icon(
+                        Icons.flash_on,
+                        color: Colors.white,
+                        size: 16,
+                      ),
+                    ),
+                    const SizedBox(width: 8),
+                    Text(
+                      'Dashboard',
+                      style: AppTypography.headlineMd.copyWith(
+                        fontSize: 20,
+                        color: AppColors.onSurface,
+                      ),
+                    ),
+                  ],
+                ),
+                PopupMenuButton<String>(
+                  onSelected: (value) {
+                    switch (value) {
+                      case 'membership':
+                        AppToast.showInfo(context, 'Premium Membership Active');
+                        break;
+                      case 'privacy':
+                        AppToast.showInfo(context, 'Privacy Policy Displayed');
+                        break;
+                      case 'mechanic':
+                        context.push('/mechanic/register');
+                        break;
+                      case 'support':
+                        AppToast.showInfo(context, 'Connecting to Support...');
+                        break;
+                    }
+                  },
+                  offset: const Offset(0, 48),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  color: AppColors.surfaceContainerLowest,
+                  child: Container(
+                    width: 40,
+                    height: 40,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: AppColors.surface,
+                      border: Border.all(
+                        color: AppColors.surfaceContainer,
+                        width: 1,
+                      ),
+                      image: const DecorationImage(
+                        image: AssetImage('assets/images/person.png'),
+                        fit: BoxFit.cover,
+                      ),
                     ),
                   ),
-                ],
-              ),
+                  itemBuilder: (BuildContext context) => [
+                    PopupMenuItem<String>(
+                      value: 'membership',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.card_membership, color: AppColors.primary, size: 20),
+                          const SizedBox(width: 12),
+                          Text('Membership', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurface)),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem<String>(
+                      value: 'privacy',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.privacy_tip_outlined, color: AppColors.secondary, size: 20),
+                          const SizedBox(width: 12),
+                          Text('Privacy Policy', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurface)),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem<String>(
+                      value: 'mechanic',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.engineering_outlined, color: AppColors.primary, size: 20),
+                          const SizedBox(width: 12),
+                          Text('Apply for Mechanic', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurface)),
+                        ],
+                      ),
+                    ),
+                    PopupMenuItem<String>(
+                      value: 'support',
+                      child: Row(
+                        children: [
+                          const Icon(Icons.support_agent_outlined, color: AppColors.secondary, size: 20),
+                          const SizedBox(width: 12),
+                          Text('Contact Support', style: AppTypography.bodyMd.copyWith(color: AppColors.onSurface)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ),
         ),
@@ -151,9 +205,7 @@ class _DashboardPageState extends State<DashboardPage>
               opacity: _fadeInAnimation,
               child: SlideTransition(
                 position: _slideAnimation,
-                child: widget.isGuest
-                    ? _buildGuestView(context)
-                    : _buildUserDashboard(context, vehicle),
+                child: _buildUserDashboard(context, vehicle),
               ),
             );
           }
@@ -183,7 +235,12 @@ class _DashboardPageState extends State<DashboardPage>
     final activeVehicle = _myGarage[_activeIndex.clamp(0, _myGarage.length - 1)];
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      padding: EdgeInsets.only(
+        left: 24,
+        right: 24,
+        top: 16,
+        bottom: MediaQuery.of(context).padding.bottom + 24,
+      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -212,7 +269,7 @@ class _DashboardPageState extends State<DashboardPage>
                 ],
               ),
               GestureDetector(
-                onTap: () => _showAddVehicleBottomSheet(context),
+                onTap: () => context.push('/add-car'),
                 child: Container(
                   width: 48,
                   height: 48,
@@ -349,7 +406,7 @@ class _DashboardPageState extends State<DashboardPage>
           // Action Buttons
           GestureDetector(
             onTap: () {
-              // Trigger Request Help flow
+              context.push('/request-help');
             },
             child: Container(
               height: 56,
@@ -383,7 +440,7 @@ class _DashboardPageState extends State<DashboardPage>
           const SizedBox(height: 16),
           GestureDetector(
             onTap: () {
-              // Trigger Ongoing Services
+              context.push('/ongoing-services');
             },
             child: Container(
               height: 56,
@@ -423,301 +480,12 @@ class _DashboardPageState extends State<DashboardPage>
     );
   }
 
-  Widget _buildGuestView(BuildContext context) {
-    return Stack(
-      children: [
-        // Map Mockup Background
-        Positioned.fill(
-          child: Container(
-            color: const Color(0xFFE5E2E0), // Soft Map background Color
-            child: CustomPaint(
-              painter: MapPainter(),
-            ),
-          ),
-        ),
 
-        // Floating controls
-        Positioned(
-          top: 24,
-          right: 24,
-          child: Column(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.surfaceContainerLowest.withValues(alpha: 0.9),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.06),
-                      blurRadius: 10,
-                    )
-                  ],
-                ),
-                child: const Icon(Icons.my_location, color: AppColors.onSurface),
-              ),
-              const SizedBox(height: 12),
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppColors.surfaceContainerLowest.withValues(alpha: 0.9),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.06),
-                      blurRadius: 10,
-                    )
-                  ],
-                ),
-                child: const Icon(Icons.layers, color: AppColors.onSurface),
-              ),
-            ],
-          ),
-        ),
 
-        // Floating Content Card
-        Positioned(
-          bottom: 40,
-          left: 24,
-          right: 24,
-          child: Container(
-            padding: const EdgeInsets.all(24),
-            decoration: BoxDecoration(
-              color: AppColors.surfaceContainerLowest,
-              borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.08),
-                  blurRadius: 30,
-                  offset: const Offset(0, 10),
-                )
-              ],
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'Premium Car Care, Anywhere.',
-                  style: AppTypography.headlineMd.copyWith(
-                    color: AppColors.onSurface,
-                  ),
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  'Explore nearby elite mechanics and world-class detailing services.',
-                  style: AppTypography.bodyMd.copyWith(
-                    color: AppColors.onSurfaceVariant,
-                  ),
-                ),
-                const SizedBox(height: 24),
-                GestureDetector(
-                  onTap: () {
-                    // Trigger request repair
-                  },
-                  child: Container(
-                    height: 56,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(9999),
-                      gradient: AppColors.primaryGradient,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.3),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    alignment: Alignment.center,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Request Repair',
-                          style: AppTypography.labelBold.copyWith(
-                            color: AppColors.onPrimary,
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        const Icon(
-                          Icons.arrow_forward,
-                          color: Colors.white,
-                          size: 18,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-  }
 
-  void _showAddVehicleBottomSheet(BuildContext context) {
-    final nameController = TextEditingController();
-    final modelController = TextEditingController();
-    final plateController = TextEditingController();
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (context) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Container(
-            decoration: const BoxDecoration(
-              color: AppColors.surfaceContainerLowest,
-              borderRadius: BorderRadius.vertical(
-                top: Radius.circular(28),
-              ),
-            ),
-            padding: const EdgeInsets.all(24),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Add New Vehicle',
-                      style: AppTypography.headlineMd.copyWith(
-                        color: AppColors.onSurface,
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close),
-                      onPressed: () => Navigator.pop(context),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: nameController,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: const InputDecoration(
-                    labelText: 'Vehicle Brand & Model Name',
-                    hintText: 'e.g. Tesla Model S',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: modelController,
-                  textCapitalization: TextCapitalization.words,
-                  decoration: const InputDecoration(
-                    labelText: 'Trim/Variant',
-                    hintText: 'e.g. Plaid',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                TextField(
-                  controller: plateController,
-                  textCapitalization: TextCapitalization.characters,
-                  decoration: const InputDecoration(
-                    labelText: 'Plate Number',
-                    hintText: 'e.g. CA 7XYZ890',
-                    border: OutlineInputBorder(),
-                  ),
-                ),
-                const SizedBox(height: 24),
-                GestureDetector(
-                  onTap: () {
-                    final name = nameController.text.trim();
-                    final model = modelController.text.trim();
-                    final plate = plateController.text.trim();
-
-                    if (name.isNotEmpty) {
-                      final newVehicle = VehicleEntity(
-                        id: DateTime.now().millisecondsSinceEpoch.toString(),
-                        name: name,
-                        model: model.isNotEmpty ? model : 'Standard',
-                        plateNumber: plate.isNotEmpty ? plate : 'N/A',
-                        status: 'Secure',
-                        daysSinceService: 0,
-                        milesToMaintenance: 3000.0,
-                      );
-                      setState(() {
-                        _myGarage.add(newVehicle);
-                        _activeIndex = _myGarage.length - 1;
-                      });
-                      Navigator.pop(context);
-                    }
-                  },
-                  child: Container(
-                    height: 56,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(9999),
-                      gradient: AppColors.primaryGradient,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.primary.withValues(alpha: 0.3),
-                          blurRadius: 20,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Add Vehicle',
-                      style: AppTypography.labelBold.copyWith(
-                        color: AppColors.onPrimary,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(height: 16),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 }
 
-// Custom Painter for Map Grid Mockup
-class MapPainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.6)
-      ..strokeWidth = 2.0;
 
-    final roadPaint = Paint()
-      ..color = Colors.white
-      ..strokeWidth = 16.0;
-
-    // Draw some simple streets / grids
-    canvas.drawLine(
-        Offset(size.width * 0.2, 0), Offset(size.width * 0.2, size.height), paint);
-    canvas.drawLine(
-        Offset(size.width * 0.7, 0), Offset(size.width * 0.7, size.height), paint);
-    canvas.drawLine(
-        Offset(0, size.height * 0.3), Offset(size.width, size.height * 0.3), paint);
-    canvas.drawLine(
-        Offset(0, size.height * 0.75), Offset(size.width, size.height * 0.75), paint);
-
-    // Large road
-    canvas.drawLine(
-      Offset(0, size.height * 0.45),
-      Offset(size.width, size.height * 0.55),
-      roadPaint,
-    );
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
 
 class AnimatedMetricCount extends StatefulWidget {
   final num value;
